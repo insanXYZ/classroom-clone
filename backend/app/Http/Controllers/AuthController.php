@@ -66,4 +66,12 @@ class AuthController extends Controller
             "message" => "Unauthorized"
         ],401);
     }
+
+    public function refresh(){
+        $token = JWTAuth::refresh();
+        return response()->json([
+            "success" => true,
+            "token" => $token,
+        ]);
+    }
 }

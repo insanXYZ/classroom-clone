@@ -15,6 +15,7 @@ class Classes extends Model
     protected $keyType = "string";
     public $incrementing = false;
 
+    protected $guarded = ['id'];
     public function user():BelongsToMany
     {
         return $this->belongsToMany(User::class,"users_join_classes","class_id","user_id");
