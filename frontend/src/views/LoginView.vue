@@ -6,7 +6,7 @@
     <button class="bg-green-500 p-1 border-[5px] border-yellow-500 text-white font-semibold">Login</button>
     <hr>
     <div class="flex w-full text-blue-600 font-semibold justify-between items-center">
-      <router-link to="#">Forgot Password?</router-link>
+      <router-link to="#">Lupa kata sandi?</router-link>
       <router-link to="register">Register</router-link>
     </div>
   </AuthTemplate>
@@ -45,7 +45,7 @@ export default {
       }
 
       login(data).then(response=> {
-        Cookies.set("TJ", response.data.token)
+        Cookies.set("token", response.data.token)
         this.$router.push("/")
       }).catch(error => {
         this.showError()

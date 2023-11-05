@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -22,8 +23,10 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
     ];
-
-
+    public function class():BelongsToMany
+    {
+        return $this->belongsToMany(Classes::class,"users_join_classes","user_id","class_id");
+    }
     protected $hidden = [
         'password',
     ];
