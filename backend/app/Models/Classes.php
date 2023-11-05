@@ -16,7 +16,7 @@ class Classes extends Model
     public $incrementing = false;
 
     protected $guarded = ['id'];
-    public function user():BelongsToMany
+    public function user()
     {
         return $this->belongsToMany(User::class,"users_join_classes","class_id","user_id");
     }

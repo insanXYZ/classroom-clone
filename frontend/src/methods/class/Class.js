@@ -50,4 +50,7 @@ function createClass(data){
     subject : data.subject,
     room : data.room
   })
+
 }
+
+export {createClass}

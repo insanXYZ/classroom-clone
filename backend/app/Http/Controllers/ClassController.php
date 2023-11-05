@@ -13,10 +13,6 @@ class ClassController extends Controller
 {
     public function store(Request $request)
     {
-        // return response()->json([
-        //     "request"=> $request->all()
-        // ]);
-
         $credentials = $request->only(["name","section","subject","room"]);
 
         $validators = Validator::make($credentials,[
@@ -43,7 +39,7 @@ class ClassController extends Controller
 
         $user = User::find(JWTAuth::user()->id);
 
-        $user->class->attach($result->id);
+        $user->class()->attach($result->id, ["role" => 1]);
 
         return response()->json([
             "success" => true,
