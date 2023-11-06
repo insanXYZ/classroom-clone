@@ -50,7 +50,10 @@ function createClass(data){
     subject : data.subject,
     room : data.room
   })
-
 }
 
-export {createClass}
+function getMenu(){
+  return axiosInstance.get("classMenu")
+}
+
+export {createClass, getMenu}

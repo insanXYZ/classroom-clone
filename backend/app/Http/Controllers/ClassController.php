@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Models\Classes;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Js;
 
 class ClassController extends Controller
 {
@@ -45,4 +47,24 @@ class ClassController extends Controller
             "success" => true,
         ]);
     }
+
+    public function getClassMenu(){
+        $result = DB::table('users_join_classes')
+        ->where('user_id', JWTAuth::user()->id)
+        ->get();
+
+        $data = collect($result);
+
+        $class = [];
+
+        foreach ($item as $result) {
+            $class[] = $item;
+        }
+
+        return response()->json([
+            "success" => true,
+            "menu" => $data->groupBy("role"),
+            "class" => $class
+        ]);
+    } 
 }
