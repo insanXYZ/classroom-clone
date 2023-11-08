@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClassResource;
 use App\Models\User;
 use App\Models\Classes;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
@@ -19,9 +21,6 @@ class ClassController extends Controller
 
         $validators = Validator::make($credentials,[
             "name" => "required",
-            "section" => "min:2",
-            "subject" => "min:2",
-            "room" => "min:2"
         ]);
 
         if($validators->fails()){
@@ -33,6 +32,8 @@ class ClassController extends Controller
 
         $result = Classes::create([
             "name" => $credentials["name"],
+            "banner_img" => Arr::random(["banner_img (2).jpg","banner_img (1).jpg","banner_img (3).jpg","banner_img (4).jpg","banner_img (5).jpg"]),
+            "color_list" => Arr::random(["#db2777", "#4f46e5", "#eab308", "#dc2626", "#52525b"]),
             "section" => $credentials["section"],
             "subject" => $credentials["subject"],
             "room" => $credentials["room"],
@@ -49,22 +50,21 @@ class ClassController extends Controller
     }
 
     public function getClassMenu(){
-        $result = DB::table('users_join_classes')
-        ->where('user_id', JWTAuth::user()->id)
-        ->get();
-
-        $data = collect($result);
-
-        $class = [];
-
-        foreach ($item as $result) {
-            $class[] = $item;
-        }
-
+        $user = JWTAuth::user();
+    
+        $classes = $user->class;
+    
+        $groupedClasses = $classes->groupBy('pivot.role');
+    
         return response()->json([
             "success" => true,
-            "menu" => $data->groupBy("role"),
-            "class" => $class
+            "menu" => $groupedClasses,
         ]);
-    } 
+    }
+
+    public function getClass(){
+        $class = User::find(JWTAuth::user()->id)->class;
+
+        return ClassResource::collection($class);
+    }
 }

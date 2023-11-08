@@ -48,9 +48,9 @@ export default {
       }
       createClass(data)
       .then(response => {
-        console.log(response.data);
+        this.close()
       }).catch(error => {
-        console.log(error.response.data);
+        this.close()
       })
 
     }

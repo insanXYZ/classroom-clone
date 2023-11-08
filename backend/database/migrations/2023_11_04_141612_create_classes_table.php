@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('classes', function (Blueprint $table) {
             $table->string("id")->primary();
+            $table->string("banner_img")->nullable(false);
+            $table->string("color_list")->nullable(false);
             $table->string("code")->nullable(false);
             $table->string("name")->nullable(false);
             $table->string("section")->nullable();

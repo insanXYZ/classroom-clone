@@ -18,6 +18,6 @@ class Classes extends Model
     protected $guarded = ['id'];
     public function user()
     {
-        return $this->belongsToMany(User::class,"users_join_classes","class_id","user_id");
+        return $this->belongsToMany(User::class,"users_join_classes","class_id","user_id")->withPivot("role");
     }
 }

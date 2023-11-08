@@ -25,7 +25,7 @@ class User extends Authenticatable implements JWTSubject
     ];
     public function class():BelongsToMany
     {
-        return $this->belongsToMany(Classes::class,"users_join_classes","user_id","class_id");
+        return $this->belongsToMany(Classes::class,"users_join_classes","user_id","class_id")->withPivot("role");
     }
     protected $hidden = [
         'password',

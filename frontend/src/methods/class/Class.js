@@ -53,7 +53,11 @@ function createClass(data){
 }
 
 function getMenu(){
-  return axiosInstance.get("classMenu")
+  return axiosInstance.get("class/menu")
 }
 
-export {createClass, getMenu}
+function getClass(){
+  return axiosInstance.get("class");
+}
+
+export {createClass, getMenu,getClass}
