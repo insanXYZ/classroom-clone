@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import HomeView from '../views/HomeView.vue'
+import ClassView from "../views/ClassView.vue"
 import {isGuest , isAuth} from "../guard/Guard"
 
 const router = createRouter({
@@ -20,6 +21,11 @@ const router = createRouter({
     {
       path: "/",
       component: HomeView,
+      beforeEnter: isAuth
+    },
+    {
+      path: "/c/:id",
+      component: ClassView,
       beforeEnter: isAuth
     }
   ]

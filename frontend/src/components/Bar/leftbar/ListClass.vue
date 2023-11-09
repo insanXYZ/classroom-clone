@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center hover:bg-slate-100 pl-6 py-2 select-none rounded-r-full cursor-pointer gap-5 relative" :class="{'w-[calc(100%-20px)]': mode} ">
+  <div class="flex items-center hover:bg-slate-100 py-2 select-none rounded-r-full cursor-pointer relative" :class="{'w-[calc(100%-20px)] , pl-6 , gap-5': mode , 'w-full, justify-center' : mode == false } ">
     <div class="w-6 h-6 rounded-full flex justify-center items-center text-white" :style="{ backgroundColor: color }" >
       {{ letter }}
     </div>

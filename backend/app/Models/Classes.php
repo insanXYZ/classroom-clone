@@ -20,4 +20,8 @@ class Classes extends Model
     {
         return $this->belongsToMany(User::class,"users_join_classes","class_id","user_id")->withPivot("role");
     }
+
+    public function announcement(){
+        return $this->hasMany(announcement::class , "class_id");
+    }
 }

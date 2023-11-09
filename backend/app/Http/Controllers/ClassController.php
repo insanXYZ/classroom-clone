@@ -36,7 +36,7 @@ class ClassController extends Controller
             "color_list" => Arr::random(["#db2777", "#4f46e5", "#eab308", "#dc2626", "#52525b"]),
             "section" => $credentials["section"],
             "subject" => $credentials["subject"],
-            "room" => $credentials["room"],
+            "room" => $credentialphps["room"],
             "code" => Str::random(7)
         ]);
 
@@ -55,7 +55,7 @@ class ClassController extends Controller
         $classes = $user->class;
     
         $groupedClasses = $classes->groupBy('pivot.role');
-    
+        
         return response()->json([
             "success" => true,
             "menu" => $groupedClasses,
