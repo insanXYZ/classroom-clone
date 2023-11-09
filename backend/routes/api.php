@@ -14,6 +14,7 @@ Route::middleware("auth.jwt")->group(function(){
     Route::post("/class",[ClassController::class , "store"]);
     Route::get("/class",[ClassController::class , "getClass"]);
     Route::get("/class/menu" , [ClassController::class , "getClassMenu"]);
+    Route::get("/class/{id}", [ClassController::class , "getClassDetail"]);
 });
 
 Route::get("/refresh",[AuthController::class , "refresh"])->middleware('refresh');

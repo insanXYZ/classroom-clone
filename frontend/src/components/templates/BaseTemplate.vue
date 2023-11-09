@@ -57,7 +57,7 @@
             </div>
           </div>
           <!-- rightbar -->
-          <div class="w-full h-full ">
+          <div class="w-full h-full overflow-y-auto relative">
             <slot></slot>
           </div>
         </div>

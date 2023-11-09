@@ -12,8 +12,9 @@
 </template>
 <script>
 import BaseTemplate from '../components/templates/BaseTemplate.vue';
-import {getClass} from "../methods/class/Class"
+import {getClasses} from "../methods/class/Class"
 import CardClass from '../components/Home/CardClass.vue';
+import { useClassStore } from '../store/class';
 
 export default {
   data(){
@@ -31,11 +32,17 @@ export default {
   },
   methods: {
     getClass(){
-      getClass().then(response => {
-        this.classList = response.data.data
-      }).catch(error => {
-        console.log(error.response);
-      })
+      const classStore = useClassStore()
+      if(classStore.class === null){
+        getClasses().then(response => {
+          classStore.class = response.data.data
+          this.classList = classStore.getClass
+        }).catch(error => {
+          console.log(error.response);
+        })
+      } else {
+        this.classList = classStore.getClass
+      }
     }
   }
 }

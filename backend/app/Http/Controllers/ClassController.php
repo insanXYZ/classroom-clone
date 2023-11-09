@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ClassResource;
 use App\Models\User;
 use App\Models\Classes;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -36,7 +37,7 @@ class ClassController extends Controller
             "color_list" => Arr::random(["#db2777", "#4f46e5", "#eab308", "#dc2626", "#52525b"]),
             "section" => $credentials["section"],
             "subject" => $credentials["subject"],
-            "room" => $credentialphps["room"],
+            "room" => $credentials["room"],
             "code" => Str::random(7)
         ]);
 
@@ -66,5 +67,13 @@ class ClassController extends Controller
         $class = User::find(JWTAuth::user()->id)->class;
 
         return ClassResource::collection($class);
+    }
+
+    public function getClassDetail($id)
+    {
+        $class = User::find(JWTAuth::user()->id)->class()->where("id",$id)->get();
+        return response()->json([
+            "class" => $class
+        ]);
     }
 }

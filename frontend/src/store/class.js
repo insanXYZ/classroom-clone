@@ -5,10 +5,10 @@ export const useClassStore = defineStore('class', {
     class : null
   }),
   getters: {
-    getMenu: (state)=> state.class
+    getClass: (state)=> state.class
   },
   actions: {
-    setMenu(data){
+    setClass(data){
       this.class = data
     }
   },
