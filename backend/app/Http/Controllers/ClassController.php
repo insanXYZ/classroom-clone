@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ClassDetailResource;
 use App\Http\Resources\ClassResource;
+use App\Models\announcement;
 use App\Models\User;
 use App\Models\Classes;
+use App\Models\File;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
 
@@ -77,5 +81,40 @@ class ClassController extends Controller
                 "success"=> false
             ],400);
         }
+    }
+
+    public function storeAnnouncement(Request $request){
+        $credentials = $request->only(["input","id"]);
+        $validate = Validator::make($credentials,[
+            "id" => "required",
+            "input" => "required"
+        ]);
+
+        if($validate->fails()){
+            return response()->json([
+                "success" => false,
+                "message" => $validate->getMessageBag()
+            ], 400);
+        }
+
+        $announcement = announcement::create([
+            "class_id" => $credentials["id"],
+            "desc" => $credentials["input"]
+        ]);
+
+        if($request->hasFile("file")){
+            Log::info("aya");
+            foreach ($request->file("file") as $value) {
+                File::create([
+                    "announcement_id" => $announcement->id,
+                    "filename" => $value->store("test")
+                ]);
+            }
+        }
+
+        return response()->json([
+            "success" => true
+        ]);
+
     }
 }

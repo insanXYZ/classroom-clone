@@ -85,7 +85,7 @@ export default {
     ModalCreateClass,
     ListClass
   },
-  emits:["refresh"],
+  emits:["refresh","me"],
   created() {
     this.getMenu()
   },  
@@ -99,6 +99,7 @@ export default {
         me().then(response => {
           menuStore.setUser(response.data.me)
           this.user = menuStore.getUser
+          this.$emit("me", menuStore.getUser)
         })
         getMenu().then(response => {
           menuStore.setMenu(response.data.menu);
@@ -109,6 +110,7 @@ export default {
       } else {
         this.menu = menuStore.getMenu        
         this.user = menuStore.getUser 
+        this.$emit("me", menuStore.getUser)
       }
     },
     setTeacherList(){

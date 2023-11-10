@@ -68,4 +68,8 @@ function me(){
   return axiosInstance.get("me")
 }
 
-export {createClass, getMenu,getClasses,getClass,me}
+function inputAnnouncement(data){
+  return axiosInstance.post("class/announcement",data)
+}
+
+export {createClass, getMenu,getClasses,getClass,me,inputAnnouncement}

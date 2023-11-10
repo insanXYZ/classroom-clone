@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\File;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class announcement extends Model
 {
@@ -11,5 +12,11 @@ class announcement extends Model
 
     public function class(){
         return $this->belongsTo(Classes::class , "class_id");
+    }
+
+    protected $guarded = ["id"];
+
+    public function file(){
+        return $this->hasMany(File::class , "announcement_id");
     }
 }

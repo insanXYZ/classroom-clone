@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('announcements', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string("class_id")->nullable(false);
-            $table->string("desc")->nullable();
+            $table->unsignedBigInteger("announcement_id");
+            $table->string("filename");
             $table->timestamps();
 
-            $table->foreign("class_id")->on("classes")->references("id");
+            $table->foreign('announcement_id')->references('id')->on('announcements');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('announcements');
+        Schema::dropIfExists('files');
     }
 };
