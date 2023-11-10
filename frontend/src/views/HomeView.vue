@@ -1,7 +1,7 @@
 <template >
-  <BaseTemplate>
-    <div class="w-full p-10 grid xl:grid-cols-3 md:grid-cols-2 gap-10">
-      <div v-if="classList.length > 1" v-for="(item, i) in classList" :key="i">
+  <BaseTemplate @refresh="getClass">
+    <div v-if="classList.length > 0" class="w-full p-10 grid xl:grid-cols-3 md:grid-cols-2 gap-10">
+      <div  v-for="(item, i) in classList" :key="i">
         <!-- <img :src="item.banner_img" alt=""> -->
         <CardClass :id="item.id" :img="item.banner_img" :section="item.section">
           {{ item.name }}
@@ -28,21 +28,26 @@ export default {
     CardClass
   },
   created(){
-    this.getClass()
+    this.getData()
   },
   methods: {
-    getClass(){
+    getData(){
       const classStore = useClassStore()
+
       if(classStore.class === null){
-        getClasses().then(response => {
-          classStore.class = response.data.data
-          this.classList = classStore.getClass
-        }).catch(error => {
-          console.log(error.response);
-        })
+        this.getClass()
       } else {
         this.classList = classStore.getClass
       }
+    },
+    getClass(){
+      const classStore = useClassStore()
+      getClasses().then(response => {
+          classStore.class = response.data.data
+          this.classList = classStore.getClass
+        }).catch(error => {
+          console.log(error);
+        })
     }
   }
 }

@@ -55,9 +55,10 @@ class AuthController extends Controller
         }
 
         if($token = JWTAuth::attempt($credentials)){
+
             return response()->json([
                 "success" => true,
-                "token" => $token,
+                "token" => $token
             ]);
         }
 
@@ -72,6 +73,17 @@ class AuthController extends Controller
         return response()->json([
             "success" => true,
             "token" => $token,
+        ]);
+    }
+
+    public function me(){
+        $user = JWTAuth::user();
+        return response()->json([
+            "success" => true,
+            "me" => [
+                "name" => $user->name,
+                "image" => url("img/".$user->img)
+            ]
         ]);
     }
 }

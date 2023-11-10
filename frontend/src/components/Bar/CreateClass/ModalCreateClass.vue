@@ -34,7 +34,7 @@ export default {
       room : ""
     }
   },
-  emits: ["close"],
+  emits: ["close" , "refresh"],
   methods: {
     close(){
       this.$emit("close")
@@ -49,6 +49,7 @@ export default {
       createClass(data)
       .then(response => {
         this.close()
+        this.$emit("refresh")
       }).catch(error => {
         this.close()
       })

@@ -45,6 +45,9 @@ export default {
       }
 
       login(data).then(response=> {
+        // let user = JSON.parse(response.data.user)
+
+        // localStorage.setItem("user", user)
         Cookies.set("token", response.data.token)
         this.$router.push("/")
       }).catch(error => {

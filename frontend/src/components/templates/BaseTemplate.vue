@@ -1,5 +1,5 @@
 <template>
-    <ModalCreateClass @close="setModalCreateClass" v-if="ModalCreateClass" />
+    <ModalCreateClass @refresh="$emit('refresh')" @close="setModalCreateClass" v-if="ModalCreateClass" />
     <div class="w-full h-screen overflow-hidden">
         <!-- topbar -->
         <div class="w-full h-16 bg-white border-b-[1px] border-blue-200 flex items-center justify-between px-6">
@@ -12,18 +12,18 @@
             </div>
             <div class="flex items-center gap-4">
               <div class="relative">
-                <img @click="setSelect(0)" class="w-9 p-2 hover:bg-slate-100 rounded-full" src="/src/assets/svg/plus.svg" alt="">
+                <img @click="setSelect(0)" class="w-10 p-3 hover:bg-slate-100 rounded-full" src="/src/assets/svg/plus.svg" alt="">
                 <Transition name="slide-fade">
-                  <div v-if="select[0]" class="absolute py-5 bg-white flex flex-col gap-1 -left-36 shadow-2xl border border-zinc-100">
+                  <div v-if="select[0]" class="absolute py-3 z-10 bg-white flex flex-col gap-1 -left-36 shadow-2xl border border-zinc-100">
                     <div class="px-5 py-2 hover:bg-zinc-50 cursor-pointer">Gabung kelas</div>
                     <div @click="setModalCreateClass" class="px-5 py-2 hover:bg-zinc-50 cursor-pointer">Buat kelas</div>
                   </div>
                 </Transition>
               </div>
-              <div class="w-9 p-2 hover:bg-slate-100 rounded-full">
+              <div class="w-10 p-3 hover:bg-slate-100 rounded-full cursor-pointer">
                   <img class="w-9" src="/src/assets/svg/dot.svg" alt="">
               </div> 
-              <img class="w-9 p-2 hover:bg-slate-100 rounded-full" src="/src/assets/svg/user.svg">
+              <img class="w-10 p-1 hover:bg-slate-100 rounded-full cursor-pointer" :src="user.image">
             </div>
         </div>
         <div class="flex h-[calc(100%-64px)]">
@@ -66,7 +66,7 @@
 <script>
 import List from '../Bar/List.vue';
 import {useMenuStore} from "../../store/menu.js";
-import { getMenu } from '../../methods/class/Class';
+import { getMenu , me } from '../../methods/class/Class';
 import ListClass from '../Bar/leftbar/ListClass.vue';
 import ModalCreateClass from '../Bar/CreateClass/ModalCreateClass.vue';
 
@@ -76,7 +76,8 @@ export default {
       select: [false , true],
       teacherList: false,
       menu: "",
-      ModalCreateClass: false
+      ModalCreateClass: false,
+      user : "",
     }
   },
   components: {
@@ -84,6 +85,7 @@ export default {
     ModalCreateClass,
     ListClass
   },
+  emits:["refresh"],
   created() {
     this.getMenu()
   },  
@@ -94,6 +96,10 @@ export default {
     getMenu(){
       const menuStore = useMenuStore();
       if(menuStore.menu === null) {
+        me().then(response => {
+          menuStore.setUser(response.data.me)
+          this.user = menuStore.getUser
+        })
         getMenu().then(response => {
           menuStore.setMenu(response.data.menu);
           this.menu = menuStore.getMenu
@@ -102,6 +108,7 @@ export default {
         })
       } else {
         this.menu = menuStore.getMenu        
+        this.user = menuStore.getUser 
       }
     },
     setTeacherList(){

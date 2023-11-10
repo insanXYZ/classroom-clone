@@ -11,6 +11,7 @@ Route::middleware("guest")->group(function(){
 });
 
 Route::middleware("auth.jwt")->group(function(){
+    Route::get("/me",[AuthController::class , "me"]);
     Route::post("/class",[ClassController::class , "store"]);
     Route::get("/class",[ClassController::class , "getClass"]);
     Route::get("/class/menu" , [ClassController::class , "getClassMenu"]);

@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClassDetailResource;
 use App\Http\Resources\ClassResource;
 use App\Models\User;
 use App\Models\Classes;
-use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Js;
 
 class ClassController extends Controller
 {
@@ -72,8 +70,12 @@ class ClassController extends Controller
     public function getClassDetail($id)
     {
         $class = User::find(JWTAuth::user()->id)->class()->where("id",$id)->get();
-        return response()->json([
-            "class" => $class
-        ]);
+        if($class->isNotEmpty()){
+            return new ClassDetailResource($class[0]);
+        } else {
+            return response()->json([
+                "success"=> false
+            ],400);
+        }
     }
 }

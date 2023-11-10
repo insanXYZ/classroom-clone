@@ -64,4 +64,8 @@ function getClass(id){
   return axiosInstance.get("class/"+id)
 }
 
-export {createClass, getMenu,getClasses,getClass}
+function me(){
+  return axiosInstance.get("me")
+}
+
+export {createClass, getMenu,getClasses,getClass,me}
