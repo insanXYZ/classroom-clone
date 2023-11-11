@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class AnnouncementResource extends JsonResource
 {
@@ -14,11 +15,16 @@ class AnnouncementResource extends JsonResource
 
     public function toArray(Request $request): array
     {
+        $file = $this->file;
+        if(isset($file[0])){
+            $file[0]->sendId = $this->id;
+        }
+        Log::info($file);
         return [
             "desc" => $this->desc,
             "created_by" => new userResource(User::find($this->user_id)),
             "created_at" => Carbon::parse($this->created_at)->format('d M Y'),
-            "file"=> FileResource::collection($this->file)
+            "file"=> FileResource::collection($file)
         ];
     }
 }

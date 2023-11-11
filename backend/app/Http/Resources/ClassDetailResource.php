@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Models\Classes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class ClassDetailResource extends JsonResource
 {
@@ -20,7 +21,8 @@ class ClassDetailResource extends JsonResource
             "section" => $this->section,
             "subject" => $this->subject,
             "room" => $this->room,
-            "announcement" => AnnouncementResource::collection($this->announcement)
+            "role" => $this->pivot->role,
+            "announcement" => AnnouncementResource::collection($this->announcement()->latest()->get())
         ];    
     }
 }

@@ -82,7 +82,7 @@ class AuthController extends Controller
             "success" => true,
             "me" => [
                 "name" => $user->name,
-                "image" => url("img/".$user->img)
+                "image" => url("storage/user_img/".$user->img)
             ]
         ]);
     }

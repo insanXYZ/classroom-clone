@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class FileResource extends JsonResource
@@ -16,7 +17,8 @@ class FileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "filename" => url(JWTAuth::user()->id."/".$this->filename)
+            "filename" => $this->filename ,
+            "url" => url("storage/class-".$this->sendId."/".$this->filename),
         ];
     }
 }

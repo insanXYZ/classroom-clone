@@ -16,7 +16,7 @@ class userResource extends JsonResource
     {
         return [
             "name" => $this->name,
-            "image" => url("img/".$this->img)
+            "image" => url("storage/user_img/".$this->img)
         ];
     }
 }

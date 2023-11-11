@@ -11,6 +11,7 @@ use App\Models\File;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
 
@@ -72,6 +73,7 @@ class ClassController extends Controller
     public function getClassDetail($id)
     {
         $class = User::with('class.announcement.file')->find(JWTAuth::user()->id)->class()->where("id",$id)->get();
+        Log::info($class);
 
         if($class->isNotEmpty()){
             return new ClassDetailResource($class[0]);
@@ -104,10 +106,12 @@ class ClassController extends Controller
 
         if($request->hasFile("file")){
             foreach ($request->file("file") as $value) {
+                $filename = $value->getClientOriginalName();
                 File::create([
                     "announcement_id" => $announcement->id,
-                    "filename" => $value->store("class-".$announcement->id)
+                    "filename" => $filename
                 ]);
+                $value->storeAs("class-".$announcement->id, $filename);
             }
         }
 
