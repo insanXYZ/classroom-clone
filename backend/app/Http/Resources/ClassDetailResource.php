@@ -8,11 +8,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ClassDetailResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
+    public static $wrap = "classes";
+
     public function toArray(Request $request): array
     {
         return [
@@ -23,7 +20,7 @@ class ClassDetailResource extends JsonResource
             "section" => $this->section,
             "subject" => $this->subject,
             "room" => $this->room,
-            "announcement" => Classes::find($this->id)->announcement
+            "announcement" => AnnouncementResource::collection($this->announcement)
         ];    
     }
 }

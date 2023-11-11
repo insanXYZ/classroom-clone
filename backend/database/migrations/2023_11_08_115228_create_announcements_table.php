@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->string("class_id")->nullable(false);
+            $table->string("user_id")->nullable(false);
             $table->string("desc")->nullable();
             $table->timestamps();
 
             $table->foreign("class_id")->on("classes")->references("id");
+            $table->foreign("user_id")->on("users")->references("id");
         });
     }
 

@@ -1,13 +1,20 @@
 import axios from "axios"
 import Cookies from "js-cookie"
+import { jwtDecode } from "jwt-decode"
 
 let axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_URL_API
 })
 
 axiosInstance.interceptors.request.use(
-  config => {
+  async config => {
     config.headers["Accept"] = "application/json"
+    let decodeJwt = jwtDecode(Cookies.get("token"))
+    if(decodeJwt.exp < Date.now() / 1000){
+      let refreshToken = await axiosInstance.get("/refresh")
+      let newToken = refreshToken.data.token
+      Cookies.set("token", newToken)
+    }
     config.headers["Authorization"] = "Bearer " + Cookies.get("token")
     return config
   },

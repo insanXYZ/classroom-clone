@@ -19,4 +19,8 @@ class announcement extends Model
     public function file(){
         return $this->hasMany(File::class , "announcement_id");
     }
+
+    public function user(){
+        return $this->belongsToMany(User::class , "user_id");
+    }
 }

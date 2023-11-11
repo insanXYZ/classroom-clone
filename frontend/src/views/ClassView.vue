@@ -46,7 +46,18 @@
                   <button type="submit" class=" py-1 px-3 font-semibold outline-none rounded-md transition-all" :class="{'bg-stone-300 , text-stone-400 , cursor-default' : inputPost.length < 1 ,'bg-black , text-white , cursor-pointer': inputPost.length > 0 }">Posting</button>
                 </div>
               </div>
-             </form>
+            </form>
+
+            <div v-if="classes.announcement.length > 0" v-for="(item , i) in classes.announcement" class="flex flex-col p-5 gap-3 w-full shadow-md rounded-lg border-blue-100">
+              <div class="flex gap-3 items-center">
+                <img :src="item.created_by.image" alt="" class="w-9 rounded-full">
+                <div class="flex flex-col justify-center">
+                  <span class="text-sm font-semibold">{{ item.created_by.name }}</span>
+                  <span class="text-sm text-abu">{{ item.created_at }}</span>
+                </div>
+              </div>
+              <span style="white-space: pre;" class="w-full">{{ item.desc }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -79,8 +90,10 @@ export default {
     getClass(){
       getClass(this.$route.params.id)
       .then(response => {
-        this.classes = response.data.data
+        console.log(response.data.classes);
+        this.classes = response.data.classes
       }).catch(error => {
+        this.$router.push("/")
       })
     },
     setPost(){
@@ -91,7 +104,7 @@ export default {
         let hasFile = false
         let formData = new FormData()
         let file = this.$refs.file
-        if(file.files.length > 0){
+        if(file.files.length > 0){  
           hasFile = true
           for(let i = 0; i < file.files.length ; i++){
             formData.append("file[]",file.files[i])
@@ -122,7 +135,8 @@ export default {
 
       return validImage.includes(nameSplit[nameSplit.length - 1])
       
-    }
+    },
+
   }
 }
 </script>

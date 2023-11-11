@@ -30,9 +30,9 @@
 
           <!-- leftbar -->
           <div class=" h-full flex flex-col border-r-[1px] border-blue-200" :class="{'w-[300px]' : select[1] }">
-            <div class="py-4 ">
+            <router-link to="/" class="py-4 ">
               <List img="home.svg" :mode="select[1]"><span v-if="select[1]">Beranda</span></List>
-            </div>
+            </router-link>
             <div v-if="menu[1] && menu[1].length > 0">
               <hr>
               <div class="py-4">
@@ -41,9 +41,11 @@
                   <img v-else src="/src/assets/svg/right.svg" class=" absolute select-none w-3 left-3 transform -translate-x-1/2 top-1/2 -translate-y-1/2">
                 </List>
                 <div v-if="teacherList" v-for="item in menu[1]">
-                  <ListClass :mode="select[1]" :color="item.color_list" :section="item.section" :letter="item.name.charAt(0)">
-                    <span v-if="select[1]">{{ item.name }}</span>
-                  </ListClass>
+                  <router-link :to="'/c/'+item.id">
+                    <ListClass :mode="select[1]" :color="item.color_list" :section="item.section" :letter="item.name.charAt(0)">
+                      <span v-if="select[1]">{{ item.name }}</span>
+                    </ListClass>
+                  </router-link>
                 </div>
               </div>
               <hr>
