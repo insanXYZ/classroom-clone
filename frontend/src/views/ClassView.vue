@@ -52,12 +52,11 @@
                   </form>
                 </div>
                 <div v-if="classes.announcement.length > 0" v-for="(item , i) in classes.announcement" class="flex flex-col p-5 gap-3 w-full shadow-md rounded-lg border-blue-100 relative">
-                  {{ item }}
                   <div v-if="classes.role == 1" @click="setOption(i)" class="absolute right-5 top-5 cursor-pointer">
                     <img src="/src/assets/svg/3dot.svg" class="w-10 p-2 hover:bg-slate-100 rounded-full">
                     <Transition name="slide-fade">
                       <div v-if="option == i" class="absolute w-[120px] -left-32 -top-3 bg-white shadow-2xl border border-blue-50 flex flex-col gap-1 py-3">
-                        <div @click="setUpdate(item.id , item.desc)" class="px-3 hover:bg-slate-100 py-1">Edit</div>
+                        <div @click="setUpdate(item.id , item.desc  ,item.file)" class="px-3 hover:bg-slate-100 py-1">Edit</div>
                         <div class="px-3 hover:bg-slate-100 py-1">Hapus</div>
                       </div>
                     </Transition>
@@ -103,6 +102,7 @@ import Nav from "../components/Class/Nav.vue"
 import {inputAnnouncement} from "../methods/class/Class"
 import { useClassDetailStore } from '../store/classDetail';
 import ModalUpdate from "../components/Class/ModalUpdate.vue"
+import isImage from "../helpers/isImage"
 
 export default {
   data(){
@@ -179,22 +179,16 @@ export default {
     getImageUrl(file){
       return URL.createObjectURL(file)
     },
-    isImage(filename){
-      let validImage = ['png', 'jpg', 'jpeg', 'gif', 'bmp']
-
-      let nameSplit = filename.split(".")
-
-      return validImage.includes(nameSplit[nameSplit.length - 1])
-      
-    },
-    setUpdate(id , desc){
+    setUpdate(id , desc , file){
       this.updateDesc = {
         "desc" : desc,
-        "id": id
+        "id": id,
+        "file" : file
       }
 
       this.update = ! this.update
-    }
+    },
+    isImage
   }
 }
 </script>
