@@ -1,5 +1,5 @@
 <template >
-  <AuthTemplate @form="store">
+  <AuthTemplate :loading="loading" @form="store">
     <span v-if="error" class="text-center bg-blue-400 font-semibold p-1 text-white">email dan password salah</span>
     <Input @input="item => this.email = item" for="email" type="text">Email</Input>
     <Input @input="item => this.password = item " for="password" min="8" type="password">Password</Input>
@@ -22,9 +22,15 @@ export default {
     return {
       email: "",
       password : "",
-      error: false
+      error: false,
+      loading : false,
     }
   },
+  // watch:{
+  //   loading(){
+  //     return this.loading
+  //   }
+  // },
   components: {
     AuthTemplate,
     Input
@@ -38,19 +44,18 @@ export default {
       }, 3000);
     },
     store(){
-
       let data = {
         email : this.email,
         password : this.password
       }
+      this.loading = true,
 
       login(data).then(response=> {
-        // let user = JSON.parse(response.data.user)
-
-        // localStorage.setItem("user", user)
+        this.loading = false
         Cookies.set("token", response.data.token)
         this.$router.push("/")
       }).catch(error => {
+        this.loading = false
         this.showError()
       })
     }

@@ -120,4 +120,23 @@ class ClassController extends Controller
         ]);
 
     }
+
+    public function updateAnnouncement($id , Request $request){
+        $announcement = announcement::find($id);
+        if($announcement->isEmpty()){
+            return response()->json([
+                "success"=> false,
+                "message" => "Pengumuman dengan id ".$id." tidak ada" 
+            ],400);
+        }
+
+        $announcement->update([
+            "desc" => $request->desc
+        ]);
+
+        return response()->json([
+            "success" => true,
+        ]);
+
+    }
 }

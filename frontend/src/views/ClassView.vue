@@ -1,6 +1,5 @@
 <template >
-  <ModalUpdate>
-    
+  <ModalUpdate @setUpdate="setUpdate" v-if="update" :input="updateDesc">
   </ModalUpdate>
   <BaseTemplate @me="item => userImage = item.image">
       <div class="w-full h-12 border-b-[1px] z-10 border-blue-200 flex items-center gap-5 px-8 sticky top-0 bg-white">
@@ -53,11 +52,12 @@
                   </form>
                 </div>
                 <div v-if="classes.announcement.length > 0" v-for="(item , i) in classes.announcement" class="flex flex-col p-5 gap-3 w-full shadow-md rounded-lg border-blue-100 relative">
+                  {{ item }}
                   <div v-if="classes.role == 1" @click="setOption(i)" class="absolute right-5 top-5 cursor-pointer">
                     <img src="/src/assets/svg/3dot.svg" class="w-10 p-2 hover:bg-slate-100 rounded-full">
                     <Transition name="slide-fade">
                       <div v-if="option == i" class="absolute w-[120px] -left-32 -top-3 bg-white shadow-2xl border border-blue-50 flex flex-col gap-1 py-3">
-                        <div class="px-3 hover:bg-slate-100 py-1">Edit</div>
+                        <div @click="setUpdate(item.id , item.desc)" class="px-3 hover:bg-slate-100 py-1">Edit</div>
                         <div class="px-3 hover:bg-slate-100 py-1">Hapus</div>
                       </div>
                     </Transition>
@@ -94,7 +94,6 @@
               </div>
             </div>
           </div>
-
 </BaseTemplate>
 </template>
 <script>
@@ -115,6 +114,11 @@ export default {
       file: [],
       option: null,
       loading:true,
+      updateDesc: {
+        "desc": null,
+        "id": null,
+      },
+      update: false
     }
   },
   components:{
@@ -183,7 +187,14 @@ export default {
       return validImage.includes(nameSplit[nameSplit.length - 1])
       
     },
+    setUpdate(id , desc){
+      this.updateDesc = {
+        "desc" : desc,
+        "id": id
+      }
 
+      this.update = ! this.update
+    }
   }
 }
 </script>

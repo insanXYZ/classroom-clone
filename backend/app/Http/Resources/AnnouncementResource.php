@@ -21,6 +21,7 @@ class AnnouncementResource extends JsonResource
         }
         Log::info($file);
         return [
+            "id" => $this->id,
             "desc" => $this->desc,
             "created_by" => new userResource(User::find($this->user_id)),
             "created_at" => Carbon::parse($this->created_at)->format('d M Y'),
