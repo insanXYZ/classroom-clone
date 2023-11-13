@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ExampleTest extends TestCase
 {
@@ -16,8 +17,6 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response(): void
     {
-        $data = DB::table("users_join_classes")->select("*")->where("user_id","9a89398d-d200-4ac1-81c9-43820d3c77dc")->groupBy("role")->get();
-
-        Log::info($data);
+        Storage::disk("public")->delete("class_9a964c7c-b68e-40e6-b9d2-2cc65058828f/tes.txt");
     }
 }

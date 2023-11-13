@@ -9,12 +9,12 @@ let axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async config => {
     config.headers["Accept"] = "application/json"
-    let decodeJwt = jwtDecode(Cookies.get("token"))
-    if(decodeJwt.exp < Date.now() / 1000){
-      let refreshToken = await axiosInstance.get("/refresh")
-      let newToken = refreshToken.data.token
-      Cookies.set("token", newToken)
-    }
+    // let decodeJwt = jwtDecode(Cookies.get("token"))
+    // if(decodeJwt.exp < Date.now() / 1000){
+    //   let refreshToken = await axiosInstance.get("/refresh")
+    //   let newToken = refreshToken.data.token
+    //   Cookies.set("token", newToken)
+    // }
     config.headers["Authorization"] = "Bearer " + Cookies.get("token")
     return config
   },
@@ -79,4 +79,12 @@ function inputAnnouncement(data){
   return axiosInstance.post("class/announcement",data)
 }
 
-export {createClass, getMenu,getClasses,getClass,me,inputAnnouncement}
+function deleteFile(id){
+  return axiosInstance.delete("file/"+id)
+}
+
+function updateAnnouncement(data, id){
+  return axiosInstance.put("class/announcement/"+id,data)
+}
+
+export {createClass, getMenu,getClasses,getClass,me,inputAnnouncement,deleteFile,updateAnnouncement}

@@ -17,7 +17,8 @@ Route::middleware("auth.jwt")->group(function(){
     Route::get("/class",[ClassController::class , "getClass"]);
     Route::get("/class/menu" , [ClassController::class , "getClassMenu"]);
     Route::get("/class/{id}", [ClassController::class , "getClassDetail"]);
-    Route::put("/class/announcement/{id}",[ClassController::class , "updateAnnouncement"]);
+    Route::put("class/announcement/{id}",[ClassController::class , "updateAnnouncement"]);
+    Route::delete("/file/{id}",[ClassController::class , "destroyFile"]);
 });
 
 Route::get("/refresh",[AuthController::class , "refresh"])->middleware('refresh');

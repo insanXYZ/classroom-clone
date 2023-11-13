@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ClassDetailResource;
-use App\Http\Resources\ClassResource;
-use App\Models\announcement;
+use App\Models\File;
 use App\Models\User;
 use App\Models\Classes;
-use App\Models\File;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use App\Models\announcement;
+use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\ClassResource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\ClassDetailResource;
 
 class ClassController extends Controller
 {
@@ -111,7 +112,7 @@ class ClassController extends Controller
                     "announcement_id" => $announcement->id,
                     "filename" => $filename
                 ]);
-                $value->storeAs("class-".$announcement->id, $filename);
+                $value->storeAs("class_".$credentials["id"], $filename);
             }
         }
 
@@ -123,11 +124,19 @@ class ClassController extends Controller
 
     public function updateAnnouncement($id , Request $request){
         $announcement = announcement::find($id);
-        if($announcement->isEmpty()){
+
+        if(is_null($announcement)){
             return response()->json([
                 "success"=> false,
                 "message" => "Pengumuman dengan id ".$id." tidak ada" 
             ],400);
+        }
+
+        if($announcement->user_id != JWTAuth::user()->id){
+            return response()->json([
+                "success" => false,
+                "message" => "havent access"
+            ], 400);
         }
 
         $announcement->update([
@@ -138,5 +147,32 @@ class ClassController extends Controller
             "success" => true,
         ]);
 
+    }
+
+    public function destroyFile($id){
+        $file = File::with('announcement')->find($id);
+        if(is_null($file)){
+            return response()->json([
+                "success" => false,
+                "message" => "file not find"
+            ],400);
+        }
+
+        $announcement = $file->announcement;
+
+        if($announcement->user_id != JWTAuth::user()->id){
+            return response()->json([
+                "success"=> false,
+                "message" => "havent Access"
+            ],400);
+        }
+
+        Storage::disk("public")->delete("class_".$announcement->class_id."/".$file->filename);
+
+        $file->delete();
+
+        return response()->json([
+            "success" => true,
+        ]);
     }
 }

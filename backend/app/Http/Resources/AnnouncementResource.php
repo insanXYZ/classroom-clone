@@ -17,7 +17,7 @@ class AnnouncementResource extends JsonResource
     {
         $file = $this->file;
         if(isset($file[0])){
-            $file[0]->sendId = $this->id;
+            $file[0]->sendId = $this->class_id;
         }
         Log::info($file);
         return [

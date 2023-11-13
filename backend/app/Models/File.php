@@ -13,6 +13,6 @@ class File extends Model
     protected $guarded = ["id"];
 
     public function announcement(){
-        return $this->belongsToMany(announcement::class , "announcement_id");
+        return $this->belongsTo(announcement::class , "announcement_id");
     }
 }

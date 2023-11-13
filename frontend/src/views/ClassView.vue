@@ -1,5 +1,5 @@
 <template >
-  <ModalUpdate @setUpdate="setUpdate" v-if="update" :input="updateDesc">
+  <ModalUpdate @refresh="getClass()" @setUpdate="setUpdate()" v-if="update" :input="updateDesc">
   </ModalUpdate>
   <BaseTemplate @me="item => userImage = item.image">
       <div class="w-full h-12 border-b-[1px] z-10 border-blue-200 flex items-center gap-5 px-8 sticky top-0 bg-white">
@@ -26,7 +26,7 @@
                   </div>
                   <form v-else @submit.prevent="store" class="p-5 flex flex-col border gap-5 border-blue-100 shadow-md rounded-lg " enctype="multipart/form-data">
                     <textarea autofocus class="p-5 bg-slate-50 w-full outline-none hover:bg-slate-100 border-b-[1px] border-black focus:border-b-2 transition-all" rows="5" v-model="inputPost" placeholder="Umumkan sesuatu ke kelas anda"></textarea>
-                    <div v-if="file.length > 0" class="flex flex-col gap-5">
+                    <div v-if="file.length > 0" class="flex flex-col gap-5 max-h-72 overflow-y-auto">
                       <div v-for="(item, i) in file" class="w-full flex items-center gap-5 border border-blue-200">
                         <div class="w-28 h-16 overflow-hidden border-r border-blue-200">
                           <img v-if="isImage(item.name) == true" :src="getImageUrl(file[i])" class="w-full h-full object-cover">
@@ -52,10 +52,12 @@
                   </form>
                 </div>
                 <div v-if="classes.announcement.length > 0" v-for="(item , i) in classes.announcement" class="flex flex-col p-5 gap-3 w-full shadow-md rounded-lg border-blue-100 relative">
+                  {{ item }}
                   <div v-if="classes.role == 1" @click="setOption(i)" class="absolute right-5 top-5 cursor-pointer">
                     <img src="/src/assets/svg/3dot.svg" class="w-10 p-2 hover:bg-slate-100 rounded-full">
                     <Transition name="slide-fade">
                       <div v-if="option == i" class="absolute w-[120px] -left-32 -top-3 bg-white shadow-2xl border border-blue-50 flex flex-col gap-1 py-3">
+                        <!-- item.id = idAnnouncement  -->
                         <div @click="setUpdate(item.id , item.desc  ,item.file)" class="px-3 hover:bg-slate-100 py-1">Edit</div>
                         <div class="px-3 hover:bg-slate-100 py-1">Hapus</div>
                       </div>
@@ -69,8 +71,8 @@
                     </div>
                   </div>
                   <span style="white-space: pre;" class="w-full">{{ item.desc }}</span>
-                  <div v-if="item.file.length > 0" v-for="(item , i) in item.file" :key="i" class="flex gap-5">
-                    <a :href="item.url" target="_blank" class="w-32 flex flex-col border border-blue-100 rounded-lg">
+                  <div v-if="item.file.length > 0" class="grid grid-cols-4 gap-1 w">
+                    <a v-for="(item , i) in item.file" :key="i" :href="item.url" target="_blank" class="w-32 flex flex-col border border-blue-100 rounded-lg">
                       <img v-if="isImage(item.filename)" :src="item.url" class="w-full h-32 object-cover rounded-t-lg">
                       <img v-else src="/src/assets/svg/doc.svg" class="w-full h-32 rounded-t-lg object-fill p-2">
                       <span class="p-[2px] text-sm truncate w-full">{{ item.filename }}</span>
@@ -103,6 +105,7 @@ import {inputAnnouncement} from "../methods/class/Class"
 import { useClassDetailStore } from '../store/classDetail';
 import ModalUpdate from "../components/Class/ModalUpdate.vue"
 import isImage from "../helpers/isImage"
+import getImageUrl from "../helpers/getImage"
 
 export default {
   data(){
@@ -176,9 +179,7 @@ export default {
       let file = this.$refs.file.files
       this.file = file
     },
-    getImageUrl(file){
-      return URL.createObjectURL(file)
-    },
+    getImageUrl,
     setUpdate(id , desc , file){
       this.updateDesc = {
         "desc" : desc,
