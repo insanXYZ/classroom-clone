@@ -52,7 +52,6 @@
                   </form>
                 </div>
                 <div v-if="classes.announcement.length > 0" v-for="(item , i) in classes.announcement" class="flex flex-col p-5 gap-3 w-full shadow-md rounded-lg border-blue-100 relative">
-                  {{ item }}
                   <div v-if="classes.role == 1" @click="setOption(i)" class="absolute right-5 top-5 cursor-pointer">
                     <img src="/src/assets/svg/3dot.svg" class="w-10 p-2 hover:bg-slate-100 rounded-full">
                     <Transition name="slide-fade">
@@ -73,9 +72,9 @@
                   <span style="white-space: pre;" class="w-full">{{ item.desc }}</span>
                   <div v-if="item.file.length > 0" class="grid grid-cols-4 gap-1 w">
                     <a v-for="(item , i) in item.file" :key="i" :href="item.url" target="_blank" class="w-32 flex flex-col border border-blue-100 rounded-lg">
-                      <img v-if="isImage(item.filename)" :src="item.url" class="w-full h-32 object-cover rounded-t-lg">
+                      <img v-if="isImage(item.url)" :src="item.url" class="w-full h-32 object-cover rounded-t-lg">
                       <img v-else src="/src/assets/svg/doc.svg" class="w-full h-32 rounded-t-lg object-fill p-2">
-                      <span class="p-[2px] text-sm truncate w-full">{{ item.filename }}</span>
+                      <span class="p-[2px] text-sm truncate w-full">{{ getNameData(item.url) }}</span>
                     </a>
                   </div>
                 </div>
@@ -106,6 +105,7 @@ import { useClassDetailStore } from '../store/classDetail';
 import ModalUpdate from "../components/Class/ModalUpdate.vue"
 import isImage from "../helpers/isImage"
 import getImageUrl from "../helpers/getImage"
+import getNameData from "../helpers/getNameData"
 
 export default {
   data(){
@@ -133,6 +133,7 @@ export default {
     this.getClass()
   },
   methods:{
+    getNameData,
     setOption(i){
       this.option = this.option == i ? null : i
     },
@@ -140,13 +141,14 @@ export default {
       let store = useClassDetailStore()
       getClass(this.$route.params.id)
       .then(response => {
-        this.loading = false
         console.log(response.data.classes);
+        this.loading = false
         store.setClass(response.data.classes)
         this.classes = store.getClass
       }).catch(error => {
         this.loading = false
         this.$router.push("/")
+        console.log(error.response);
       })
     },
     setPost(){

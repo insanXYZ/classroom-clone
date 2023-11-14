@@ -1,8 +1,7 @@
 <template >
   <BaseTemplate @refresh="getClass">
     <div v-if="classList.length > 0" class="w-full p-10 grid xl:grid-cols-3 md:grid-cols-2 gap-10">
-      <div  v-for="(item, i) in classList" :key="i">
-        <!-- <img :src="item.banner_img" alt=""> -->
+      <div v-for="(item, i) in classList" :key="i">
         <CardClass :id="item.id" :img="item.banner_img" :section="item.section">
           {{ item.name }}
         </CardClass>

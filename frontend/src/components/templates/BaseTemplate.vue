@@ -1,5 +1,6 @@
 <template>
-    <ModalCreateClass @refresh="$emit('refresh')" @close="setModalCreateClass" v-if="ModalCreateClass" />
+  <ModalJoinClass v-if="ModalJoinClass" @close="setJoinClass"></ModalJoinClass>
+<ModalCreateClass @refresh="$emit('refresh')" @close="setModalCreateClass" v-if="ModalCreateClass" />
     <div class="w-full h-screen overflow-hidden">
         <!-- topbar -->
         <div class="w-full h-16 bg-white border-b-[1px] border-blue-200 flex items-center justify-between px-6">
@@ -15,7 +16,7 @@
                 <img @click="setSelect(0)" class="w-10 p-3 hover:bg-slate-100 rounded-full" src="/src/assets/svg/plus.svg" alt="">
                 <Transition name="slide-fade">
                   <div v-if="select[0]" class="absolute py-3 z-10 bg-white flex flex-col gap-1 -left-36 shadow-2xl border border-zinc-100">
-                    <div class="px-5 py-2 hover:bg-zinc-50 cursor-pointer">Gabung kelas</div>
+                    <div @click="setJoinClass" class="px-5 py-2 hover:bg-zinc-50 cursor-pointer">Gabung kelas</div>
                     <div @click="setModalCreateClass" class="px-5 py-2 hover:bg-zinc-50 cursor-pointer">Buat kelas</div>
                   </div>
                 </Transition>
@@ -71,6 +72,7 @@ import {useMenuStore} from "../../store/menu.js";
 import { getMenu , me } from '../../methods/class/Class';
 import ListClass from '../Bar/leftbar/ListClass.vue';
 import ModalCreateClass from '../Bar/CreateClass/ModalCreateClass.vue';
+import ModalJoinClass from '../Bar/JoinClass/ModalJoinClass.vue';
 
 export default {
   data(){
@@ -80,12 +82,14 @@ export default {
       menu: "",
       ModalCreateClass: false,
       user : "",
+      ModalJoinClass : false
     }
   },
   components: {
     List,
     ModalCreateClass,
-    ListClass
+    ListClass,
+    ModalJoinClass
   },
   emits:["refresh","me"],
   created() {
@@ -121,6 +125,9 @@ export default {
     setSelect(no){
       this.select[no] = !this.select[no]
     },
+    setJoinClass(){
+      this.ModalJoinClass = ! this.ModalJoinClass
+    }
   }
 }
 </script>

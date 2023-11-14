@@ -20,6 +20,31 @@ class ClassController extends Controller
 {
     public function store(Request $request)
     {
+
+        if($request->query("join")){
+            $class = Classes::where("code",$request->code)->first();
+
+            if(is_null($class)){
+                return response()->json([
+                    "success"=>false
+                ],400);
+            }
+
+            $user = User::find($request->id);
+
+            if(is_null($user)){
+                return response()->json([
+                    "success"=>false
+                ],400);
+            }
+
+            $user->class()->attach($class->id);
+
+            return response()->json([
+                "success" => true
+            ]);
+        }
+
         $credentials = $request->only(["name","section","subject","room"]);
 
         $validators = Validator::make($credentials,[
@@ -52,6 +77,7 @@ class ClassController extends Controller
         ]);
     }
 
+
     public function getClassMenu(){
         $user = JWTAuth::user();
     
@@ -74,7 +100,6 @@ class ClassController extends Controller
     public function getClassDetail($id)
     {
         $class = User::with('class.announcement.file')->find(JWTAuth::user()->id)->class()->where("id",$id)->get();
-        Log::info($class);
 
         if($class->isNotEmpty()){
             return new ClassDetailResource($class[0]);
@@ -110,9 +135,8 @@ class ClassController extends Controller
                 $filename = $value->getClientOriginalName();
                 File::create([
                     "announcement_id" => $announcement->id,
-                    "filename" => $filename
+                    "filename" => $value->storeAs("class_".$credentials["id"], $filename)
                 ]);
-                $value->storeAs("class_".$credentials["id"], $filename);
             }
         }
 
@@ -123,12 +147,13 @@ class ClassController extends Controller
     }
 
     public function updateAnnouncement($id , Request $request){
+
         $announcement = announcement::find($id);
 
         if(is_null($announcement)){
             return response()->json([
                 "success"=> false,
-                "message" => "Pengumuman dengan id ".$id." tidak ada" 
+                "message" => "Announcement not found" 
             ],400);
         }
 
@@ -143,11 +168,23 @@ class ClassController extends Controller
             "desc" => $request->desc
         ]);
 
+        if($request->hasFile("file")){
+            foreach ($request->file("file") as $file) {
+                $filename = $file->getClientOriginalName();
+                File::create([
+                    "announcement_id" => $announcement->id,
+                    "filename" => $file->storeAs("class_".$announcement->class_id , $filename)
+                ]);
+            }
+        }
+
         return response()->json([
             "success" => true,
         ]);
-
     }
+
+        
+    
 
     public function destroyFile($id){
         $file = File::with('announcement')->find($id);
@@ -167,7 +204,7 @@ class ClassController extends Controller
             ],400);
         }
 
-        Storage::disk("public")->delete("class_".$announcement->class_id."/".$file->filename);
+        Storage::disk("public")->delete($file->filename);
 
         $file->delete();
 

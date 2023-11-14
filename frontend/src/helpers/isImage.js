@@ -1,9 +1,11 @@
 function isImage(filename){
   let validImage = ['png', 'jpg', 'jpeg', 'gif', 'bmp']
 
-  let nameSplit = filename.split(".")
+  let nameSplit = filename.split("/")
 
-  return validImage.includes(nameSplit[nameSplit.length - 1])
+  let extension = nameSplit[nameSplit.length - 1].split(".")
+
+  return validImage.includes(extension[extension.length - 1])
   
 }
 

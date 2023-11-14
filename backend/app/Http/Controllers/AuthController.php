@@ -81,6 +81,7 @@ class AuthController extends Controller
         return response()->json([
             "success" => true,
             "me" => [
+                "id" => $user->id,
                 "name" => $user->name,
                 "image" => url("storage/user_img/".$user->img)
             ]

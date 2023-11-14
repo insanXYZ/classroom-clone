@@ -1,15 +1,14 @@
 <template >
   <ModalTemplate >
-      <form @submit.prevent="store" class="w-[500px] p-5 bg-white flex flex-col gap-5">
+      <form @submit.prevent="store" class="w-[500px] p-5 bg-white flex flex-col gap-5" enctype="multipart/form-data">
         <textarea v-model="inputForm" class="p-5 bg-slate-50 w-full outline-none hover:bg-slate-100 border-b-[1px] border-black focus:border-b-2 transition-all" rows="5" placeholder="Perbarui pengumuman"></textarea>
         <div v-if="input.file.length != 0" v-for="(item , i) in input.file"  :key="i" class="flex justify-between items-center w-full rounded-lg border border-blue-100">
-          {{ i }}
           <div class="flex gap-3">
-            <img class="w-12 h-16 object-cover border-r border-blue-100" v-if="isImage(item.filename)" :src="item.url">
+            <img class="w-12 h-16 object-cover border-r border-blue-100" v-if="isImage(item.url)" :src="item.url">
             <img class="w-12 h-16 p-2 border-r border-blue-100" v-else src="/src/assets/svg/doc.svg">
             <div class="flex flex-col justify-center">
-              <div>{{ item.filename }}</div>
-              <div class="text-abu text-sm truncate" v-if="isImage(item.filename)">
+              <div>{{ getNameData(item.url) }}</div>
+              <div class="text-abu text-sm truncate" v-if="isImage(item.url)">
                 Gambar
               </div>
               <div class="text-abu text-sm truncate" v-else>
@@ -19,7 +18,6 @@
           </div>
           <img @click="deleteFile(item.id ,i)" src="/src/assets/svg/trash.svg" class="w-9 hover:bg-slate-100 p-2 mr-5 rounded-full">
         </div>
-
         
         <div v-if="file.length != 0" v-for="(item , i) in file"  :key="i" class="flex justify-between items-center w-full rounded-lg border border-blue-100">
           <div class="flex gap-3">
@@ -35,9 +33,7 @@
               </div>
             </div>
           </div>
-          <img @click="deleteFileLocal(i)" src="/src/assets/svg/trash.svg" class="w-9 hover:bg-slate-100 p-2 mr-5 rounded-full">
         </div>
-
 
         <div class="flex justify-between items-center">
           <div class="flex items-center">
@@ -61,6 +57,7 @@ import ModalTemplate from "./ModalTemplate.vue"
 import isImage from "../../helpers/isImage";
 import getImageUrl from "../../helpers/getImage";
 import {deleteFile , updateAnnouncement} from "../../methods/class/Class"
+import getNameData from "../../helpers/getNameData";
 export default {
   data(){
     return {
@@ -74,18 +71,31 @@ export default {
   props: ["input"],
   emits: ["setUpdate","refresh"],
   methods: {
+    getNameData,
     isImage,
     store(){
-      let data = {
-        desc : this.inputForm
+      if(this.inputForm != ""){ 
+
+        let formData = new FormData()
+        formData.append("desc", this.inputForm)
+
+        let file = this.$refs.file.files
+
+        if(file.length > 0){  
+          for(let i = 0; i < file.length ; i++){  
+            formData.append("file[]",file[i])
+          }
+        }
+
+        updateAnnouncement(formData , this.input.id)
+        .then(response => {
+          this.$emit("setUpdate")
+          this.$emit("refresh")
+        }).catch(error => {
+          this.$emit("setUpdate")
+          this.$emit("refresh")
+        })
       }
-      updateAnnouncement(data , this.input.id)
-      .then(response => {
-        this.$emit("refresh")
-        this.$emit("setUpdate")
-      }).catch(error => {
-        console.log(error.response);
-      })
     },
     deleteFile(id , i){
       this.input.file.splice(i,1);
@@ -100,12 +110,8 @@ export default {
     fileInput(){
       let file = this.$refs.file.files
       this.file = file
-      console.log(this.file);
     },
     getImageUrl,
-    deleteFileLocal(i){
-      this.file.splice(i ,1)
-    }
   }
 }
 </script>
