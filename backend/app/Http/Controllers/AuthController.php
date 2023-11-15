@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -86,5 +87,14 @@ class AuthController extends Controller
                 "image" => url("storage/user_img/".$user->img)
             ]
         ]);
+    }
+
+    public function logout(){
+        Log::info("fnc logout");
+        auth()->logout();
+
+        return response()->json([
+            "success"=> true
+        ],200);
     }
 }

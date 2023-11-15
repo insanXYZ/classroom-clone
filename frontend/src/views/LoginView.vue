@@ -5,8 +5,7 @@
     <Input @input="item => this.password = item " for="password" min="8" type="password">Password</Input>
     <button class="bg-green-500 p-1 border-[5px] border-yellow-500 text-white font-semibold">Login</button>
     <hr>
-    <div class="flex w-full text-blue-600 font-semibold justify-between items-center">
-      <router-link to="#">Lupa kata sandi?</router-link>
+    <div class="flex w-full text-blue-600 font-semibold justify-end items-center">
       <router-link to="register">Register</router-link>
     </div>
   </AuthTemplate>

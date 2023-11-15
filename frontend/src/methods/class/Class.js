@@ -1,6 +1,7 @@
 import axios from "axios"
 import Cookies from "js-cookie"
 import { jwtDecode } from "jwt-decode"
+import router from "../../router/index"
 
 let axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_URL_API
@@ -40,11 +41,11 @@ axiosInstance.interceptors.response.use(
 
       return axiosInstance(originalRequest)
     }
-    // if(error.response.status == 401 && error.response.data.message == "Invalid" || "Error"){
 
-    //   Cookies.remove("token")
-    //   this.$router.push("/login")
-    // }
+    if(error.response.status == 401 && error.response.data.message == "Invalid" || "Error"){
+      Cookies.remove("token")
+      return router.push("/login")
+    }
 
     return Promise.reject(error)
   }
@@ -91,4 +92,8 @@ function joinClass(data){
   return axiosInstance.post("class?join=true",data);
 }
 
-export {createClass, getMenu,getClasses,getClass,me,inputAnnouncement,deleteFile,updateAnnouncement,joinClass}
+function logout(){
+  return axiosInstance.get("logout")
+}
+
+export {createClass, getMenu,getClasses,getClass,me,inputAnnouncement,deleteFile,updateAnnouncement,joinClass,logout}

@@ -1,5 +1,5 @@
 <template>
-  <ModalJoinClass v-if="ModalJoinClass" @close="setJoinClass"></ModalJoinClass>
+  <ModalJoinClass @refresh="$emit('refresh') , getNewMenu" v-if="ModalJoinClass" @close="setJoinClass"></ModalJoinClass>
 <ModalCreateClass @refresh="$emit('refresh')" @close="setModalCreateClass" v-if="ModalCreateClass" />
     <div class="w-full h-screen overflow-hidden">
         <!-- topbar -->
@@ -24,7 +24,22 @@
               <div class="w-10 p-3 hover:bg-slate-100 rounded-full cursor-pointer">
                   <img class="w-9" src="/src/assets/svg/dot.svg" alt="">
               </div> 
-              <img class="w-10 p-1 hover:bg-slate-100 rounded-full cursor-pointer" :src="user.image">
+              <div class="relative">
+                <img @click="setUser" class="w-10 p-1 hover:bg-slate-100 rounded-full cursor-pointer" :src="user.image">
+                <Transition name="slide-fade">
+                  <div v-if="modalUser" class="absolute flex flex-col gap-4 z-10 -left-52 p-5 w-56 bg-white border border-blue-100 shadow-xl rounded-lg">
+                    <div class="flex items-center gap-3">
+                      <img class="w-10 rounded-full" :src="user.image" >
+                      <div class="w-full truncate text text-lg font-semibold">{{ user.name }}</div>
+                    </div>
+                    <hr>
+                    <div @click="logout" class="flex items-center gap-1 bg-red-500 rounded-lg cursor-pointer py-[2px]">
+                      <img src="/src/assets/svg/exit.svg" class="w-9" alt="">
+                      <span class="text-white font-semibold">Keluar</span>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
             </div>
         </div>
         <div class="flex h-[calc(100%-64px)]">
@@ -51,14 +66,27 @@
               </div>
               <hr>
             </div>
+
             <div v-if="menu[0] && menu[0].length > 0">
               <hr>
               <div class="py-4">
-                <List img="academic.svg">Terdaftar</List>
+                <List @click="setStudentList" :mode="select[1]" img="academic.svg" class="select-none"><span v-if="select[1]">Terdaftar</span>
+                  <img v-if="studentList" src="/src/assets/svg/down.svg" class=" absolute select-none w-3 left-3 transform -translate-x-1/2 top-1/2 -translate-y-1/2">
+                  <img v-else src="/src/assets/svg/right.svg" class=" absolute select-none w-3 left-3 transform -translate-x-1/2 top-1/2 -translate-y-1/2">
+                </List>
+                <div v-if="studentList" v-for="item in menu[0]">
+                  <router-link :to="'/c/'+item.id">
+                    <ListClass :mode="select[1]" :color="item.color_list" :section="item.section" :letter="item.name.charAt(0)">
+                      <span v-if="select[1]">{{ item.name }}</span>
+                    </ListClass>
+                  </router-link>
+                </div>
               </div>
               <hr>
             </div>
           </div>
+
+
           <!-- rightbar -->
           <div class="w-full h-full overflow-y-auto relative">
             <slot></slot>
@@ -69,20 +97,23 @@
 <script>
 import List from '../Bar/List.vue';
 import {useMenuStore} from "../../store/menu.js";
-import { getMenu , me } from '../../methods/class/Class';
+import { getMenu , me , logout} from '../../methods/class/Class';
 import ListClass from '../Bar/leftbar/ListClass.vue';
 import ModalCreateClass from '../Bar/CreateClass/ModalCreateClass.vue';
 import ModalJoinClass from '../Bar/JoinClass/ModalJoinClass.vue';
+import Cookies from "js-cookie"
 
 export default {
   data(){
     return{
-      select: [false , true],
+      select: [false , true ],
       teacherList: false,
+      studentList: false , 
       menu: "",
       ModalCreateClass: false,
       user : "",
-      ModalJoinClass : false
+      ModalJoinClass : false,
+      modalUser: false
     }
   },
   components: {
@@ -98,6 +129,13 @@ export default {
   methods: {
     setModalCreateClass(){
       this.ModalCreateClass = ! this.ModalCreateClass 
+    },
+    getNewMenu(){
+      const menuStore = useMenuStore();
+        getMenu().then(response => {
+          menuStore.setMenu(response.data.menu);
+          this.menu = menuStore.getMenu
+      })
     },
     getMenu(){
       const menuStore = useMenuStore();
@@ -122,11 +160,25 @@ export default {
     setTeacherList(){
       this.teacherList = !this.teacherList
     },
+    setStudentList(){
+      this.studentList = !this.studentList
+    },
     setSelect(no){
       this.select[no] = !this.select[no]
     },
     setJoinClass(){
       this.ModalJoinClass = ! this.ModalJoinClass
+    },
+    setUser(){
+      this.modalUser = !this.modalUser
+    },
+    logout(){
+      logout().then(response => {
+        Cookies.remove("token")
+        this.$router.push("/login")
+      }).catch(error => {
+        console.log(error);
+      })
     }
   }
 }

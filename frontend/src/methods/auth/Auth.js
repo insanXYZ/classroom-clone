@@ -26,4 +26,5 @@ function login(data){
   })
 }
 
+
 export {register, login}

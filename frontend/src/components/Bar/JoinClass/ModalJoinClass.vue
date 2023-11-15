@@ -23,7 +23,7 @@ export default {
       input : "",
     }
   },
-  emits: ["close"],
+  emits: ["close","refresh"],
   components: {
     ModalTemplate,
   },
@@ -37,9 +37,11 @@ export default {
       }
 
       joinClass(data).then(response => {
-        console.log(response.data);
+        this.$emit("close")
+        this.$emit("refresh")
       }).catch(error => {
-        console.log(error.response);
+        this.$emit("close")
+        this.$emit("refresh")
       })
     }
   }

@@ -12,15 +12,8 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class authJwt
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
-
         try {
             if(! $user = JWTAuth::parseToken()->authenticate()){
                 return response()->json([
@@ -45,6 +38,6 @@ class authJwt
             ],401);
         }
 
-        return $response;
+        return $next($request);
     }
 }
